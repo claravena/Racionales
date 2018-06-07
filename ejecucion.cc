@@ -23,7 +23,12 @@ int main()
   Racional<complex<double>> r0(cero,uno);
   Racional<complex<double>> uno1(uno,uno);
 
-  cout << r1+r2 <<endl; 
+  //cout << r1+r2 <<endl;
+  //double A=MCD(21,7);
+  Racional<double> A(3,2);
+  Racional<double> B;
+  B=A;
+  cout<<B<<endl; 
 
   
  

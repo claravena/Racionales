@@ -9,8 +9,7 @@ using namespace std;
 //----------- Definicion de la clase------------------
 
 template <class T>
-class Racional {  
-
+class Racional { 
  private:
   T numerador; 
   T denominador;
@@ -23,7 +22,8 @@ class Racional {
   void set_denominador(T);
   T get_numerador() const;
   T get_denominador() const; 
-  Racional(const Racional &); 
+  Racional(const Racional<T> &);
+  Racional & operator = (const Racional<T> & ); 
   
 };
              
@@ -77,13 +77,26 @@ Racional<T>::Racional(const Racional<T> & z){
 template<class T>
 T MCD(T z1, T z2)
 {
+  //cout<< z1<<endl;
   T(0);
-  if ( z2==T(0))
+  if ( z2==T(0)){ 
     return z1;
-  else{
-    MCD(z2, z1-(z1*z2/z2));
+  }
+  else{ 
+    MCD(z2, z1-z1/z2*z2);
   }
 }
+//Operador asignacion
+template <class T>
+Racional<T> &Racional<T>::operator = (const Racional<T> & R){
+  numerador = R.get_numerador();
+  denominador=R.get_denominador();
+  return *this; 
+}
+
+
+
+
 
 //Simplificar una fraccion 
 template <class T>
@@ -137,9 +150,15 @@ Racional<T> operator / (Racional<T> z1, Racional<T> z2){
 
 //operador cout
 template <class T>
-ostream & operator << (ostream & os, Racional<T> c){
-  os << c.get_numerador() << "/" << c.get_denominador(); 
-  return os; 
+ostream & operator << (ostream & os, Racional<T> & c){
+  if (c.get_denominador()/MCD(c.get_numerador(),c.get_denominador())==T(1)){
+    os << c.get_numerador()/MCD(c.get_numerador(),c.get_denominador()); 
+    return os;
+  }
+  else{
+    os << (c.get_numerador()/MCD(c.get_numerador(),c.get_denominador())) << "/" << (c.get_denominador()/MCD(c.get_numerador(),c.get_denominador())); 
+    return os; 
+  }
 }
 
 
