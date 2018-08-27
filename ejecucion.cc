@@ -25,9 +25,10 @@ int main()
 
   //cout << r1+r2 <<endl;
   //double A=MCD(21,7);
-  Racional<double> A(3,2);
-  Racional<double> B;
-  B=A;
+  Racional<int> A(1,-4);
+  Racional<int> B(,1);
+  Racional<int> C(0,1);
+  //C=;
   cout<<B<<endl; 
 
   

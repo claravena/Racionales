@@ -3,20 +3,22 @@
 #define RACIONAL_H
 #include <iostream>
 #include <cmath>
+
 using namespace std;
 
 
 //----------- Definicion de la clase------------------
 
 template <class T>
+
 class Racional { 
+
  private:
   T numerador; 
   T denominador;
 
  public:
-  Racional();
-  Racional(T , T=1 ); // constructor
+  Racional(T=T(1),T=T(1)); // constructor
   ~Racional(); //destructor racional
   void set_numerador(T);
   void set_denominador(T);
@@ -26,17 +28,24 @@ class Racional {
   Racional & operator = (const Racional<T> & ); 
   
 };
-             
+
+
 //constructor
 template <class T>
 Racional<T>::Racional( T x,  T y){
-  numerador=x;
-  denominador=y;
-  
+  //implementacion del algoritmo de euclides para reducir la fraccion. 
+  T X1=x;
+  T X2=y;
+  while(X2!=T(0)){
+    T aux_X1=X1;
+    T aux_X2=X2;
+    X1=X2;
+    X2=aux_X1-aux_X1/aux_X2*aux_X2;
+  };
+  numerador=x/X1;
+  denominador=y/X1;
 }
-template <class T>
-Racional<T>::Racional(){
-}
+
 
 template <class T>
 Racional<T>::~Racional(){
@@ -65,7 +74,6 @@ T Racional<T>::get_denominador() const {
   return denominador; 
   }
 
-
 //Construcctor de copia
 template <class T>
 Racional<T>::Racional(const Racional<T> & z){
@@ -73,19 +81,10 @@ Racional<T>::Racional(const Racional<T> & z){
   denominador = z.denominador;
     }
 
-//MAXIMO COMUN DIVISOR
-template<class T>
-T MCD(T z1, T z2)
-{
-  //cout<< z1<<endl;
-  T(0);
-  if ( z2==T(0)){ 
-    return z1;
-  }
-  else{ 
-    MCD(z2, z1-z1/z2*z2);
-  }
-}
+
+//######################################Operadores ##########################################################################
+
+
 //Operador asignacion
 template <class T>
 Racional<T> &Racional<T>::operator = (const Racional<T> & R){
@@ -94,34 +93,36 @@ Racional<T> &Racional<T>::operator = (const Racional<T> & R){
   return *this; 
 }
 
-
-
-
-
-//Simplificar una fraccion 
-template <class T>
-Racional<T> simplificar(Racional<T> z1){
-  return(z1.get_numerador()/(MCD(z1.get_numerador(), z1.get_denominador())), z1.get_denominador()/(MCD(z1.get_numerador(), z1.get_denominador())));
-
-}
-
-
 //Operador suma
 template <class T>
 Racional<T> operator + (Racional<T> z1 , Racional<T> z2 ){
   return Racional<T>((z1.get_numerador()*z2.get_denominador()+z2.get_numerador()*z1.get_denominador()),z1.get_denominador()*z2.get_denominador());
 }
 
-//Operador resta
-template <class T>
-Racional<T> operator - (Racional<T> z1, Racional<T> z2){
-  return Racional<T>((z1.get_numerador()*z2.get_denominador()-z2.get_numerador()*z1.get_denominador()),z1.get_denominador()*z2.get_denominador());
-}
-
 //Operador producto para cualquier tipo  
 template <class T>
 Racional<T> operator * (Racional<T> z1, Racional<T> z2){
   return Racional<T>(z1.get_numerador()*z2.get_numerador(),z1.get_denominador()*z2.get_denominador());
+}
+
+//Operador producto por la izquierda para aumenta en a la fraccion 
+template <class T>
+Racional<T> operator * (T a, Racional<T> z1){
+  Racional<T> z2(a,T(1)); 
+  return z1*z2;
+}
+
+
+//Operador producto por la derecha para aumenta en a la fraccion 
+template <class T>
+Racional<T> operator * (Racional<T> z1, T a){ 
+  return a*z1;
+}
+
+//Operador resta
+template <class T>
+Racional<T> operator - (Racional<T> z1, Racional<T> z2){
+ return z1+T(-1)*z2;
 }
 
 
@@ -141,6 +142,7 @@ Racional<T> elevar(Racional<T> z1, int z){
   };
 }
 	
+
 //Operador division
 template <class T>
 Racional<T> operator / (Racional<T> z1, Racional<T> z2){
@@ -148,18 +150,23 @@ Racional<T> operator / (Racional<T> z1, Racional<T> z2){
   return z1*z3; 
 }
 
+
 //operador cout
 template <class T>
 ostream & operator << (ostream & os, Racional<T> & c){
-  if (c.get_denominador()/MCD(c.get_numerador(),c.get_denominador())==T(1)){
-    os << c.get_numerador()/MCD(c.get_numerador(),c.get_denominador()); 
+  if (c.get_denominador()==T(1)){
+    os << c.get_numerador(); 
     return os;
   }
   else{
-    os << (c.get_numerador()/MCD(c.get_numerador(),c.get_denominador())) << "/" << (c.get_denominador()/MCD(c.get_numerador(),c.get_denominador())); 
-    return os; 
+    if(c.get_denominador()<T(0.0)){
+      os << T(-1)*c.get_numerador() << "/" << abs(c.get_denominador()); 
+      return os;
+    }
+    else{
+      os << c.get_numerador() << "/" << c.get_denominador(); 
+      return os;
+    }
   }
 }
-
-
 #endif
